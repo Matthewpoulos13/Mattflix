@@ -105,5 +105,26 @@
   </footer>
 
   <script src="script.js"></script>
-</body>
+<script>
+/* Mattflix live Continue Watching progress */
+function mattflixUpdateProgress(title, video){
+  if(!video || !isFinite(video.duration) || video.duration <= 0) return;
+  const item = (typeof find === "function" ? find(title) : (typeof getItem === "function" ? getItem(title) : null));
+  if(item) item.progress = Math.max(0, Math.min(100, video.currentTime / video.duration * 100));
+  document.querySelectorAll('.card[data-title]').forEach(card=>{
+    if(card.dataset.title === title){
+      const bar=card.querySelector('.progress i');
+      if(bar) bar.style.width=(item ? item.progress : (video.currentTime/video.duration*100))+'%';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+ const v=document.getElementById('video'); if(!v)return;
+ v.addEventListener('timeupdate', ()=>{
+  const n=document.getElementById('playerName');
+  if(n && n.textContent) mattflixUpdateProgress(n.textContent.trim(),v);
+ });
+});
+</script></body>
 </html>
