@@ -6,7 +6,7 @@ const catalog = [
   {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it's hidden in the past he thought he had escaped.", category:"continue", progress:47,image:SPY_IMAGE,c1:"#172554",c2:"#111827"},
 
   {title:"The High Marker", year:2026, desc:"A exciting tale about Mark and his intersting marker.", category:"continue", progress:72,c1:"#172554",c2:"#111827"},
-  {title:"Neon Harbor", year:2025, desc:"A detective follows a trail of coded messages through a futuristic waterfront.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
+  {title:"", year:2025, desc:"A detective follows a trail of coded messages through a futuristic waterfront.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
   {title:"The Outpost", year:2025, desc:"A remote research team loses contact with the outside world after finding something buried beneath the ice.", category:"continue", progress:18,c1:"#334155",c2:"#0f172a"},
   {title:"After Dark", year:2026, desc:"Three friends discover that their town has a second life after midnight.", category:"continue", progress:88,c1:"#3f0b23",c2:"#111827"},
   {title:"Code Zero", year:2024, desc:"An ordinary programmer uncovers a security key that powerful people will do anything to recover.", category:"continue", progress:57,c1:"#064e3b",c2:"#172554"},
@@ -15,11 +15,11 @@ const catalog = [
   {title:"Night Shift", year:2025, desc:"A hospital security guard realizes one patient has never appeared on any record.", category:"popular",c1:"#450a0a",c2:"#1f2937"},
   {title:"Three Against Three", year:2026, desc:"Its a Marty story, with some others as well.", category:"popular",c1:"#3f6212",c2:"#172554"},
   {title:"Paper Kingdom", year:2025, desc:"A brilliant strategist assembles an unlikely crew for an impossible heist.", category:"popular",c1:"#713f12",c2:"#292524"},
-  {title:"Parallel", year:2026, desc:"A scientist discovers a doorway to a world where one decision changed everything.", category:"popular",c1:"#581c87",c2:"#172554"},
+  {title:"The Company", year:2025, desc:"In the middle of nothing a company was created to save everyone.", category:"popular",c1:"#581c87",c2:"#172554"},
   {title:"Black Tide", year:2025, desc:"A salvage crew finds a signal beneath the ocean floor.", category:"popular",c1:"#082f49",c2:"#0f172a"},
   {title:"The Gambit", year:2026, desc:"A young chess prodigy enters a tournament where every match hides a secret.", category:"popular",c1:"#7f1d1d",c2:"#292524"},
 
-  {title:"The Last Signal", year:2026, desc:"A mysterious signal appears across the night sky, drawing a group of friends into a race to discover who sent it — and why it knows their names.", category:"new", c1:"#8d1019",c2:"#111827"},
+  {title:"The Stolen Card", year:2026, desc:"Three friends race to steal a card to copy it for their own good.", category:"new", c1:"#8d1019",c2:"#111827"},
   {title:"Static", year:2026, desc:"A radio host starts receiving broadcasts from tomorrow.", category:"new",c1:"#312e81",c2:"#111827"},
   {title:"Red Planet", year:2026, desc:"The first crewed mission to Mars loses communication just hours before landing.", category:"new",c1:"#9a3412",c2:"#1c1917"},
   {title:"Echo House", year:2026, desc:"A family moves into a house where every room remembers a different past.", category:"new",c1:"#334155",c2:"#3f0b23"},
