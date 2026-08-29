@@ -5,7 +5,7 @@ const catalog = [
   {title:"The Flames Hit", year:2026, desc:"When the Flames start hitting they start winning.", category:"continue", progress:61,c1:"#b91c1c",c2:"#422006"},
   {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it's hidden in the past he thought he had escaped.", category:"continue", progress:47,image:SPY_IMAGE,c1:"#172554",c2:"#111827"},
 
-  {title:"The High Marker", year:2026, desc:"A courier has one night to cross a city that seems to change every time the clock strikes twelve.", category:"continue", progress:72,c1:"#172554",c2:"#111827"},
+  {title:"The High Marker", year:2026, desc:"A exciting tale about Mark and his intersting marker.", category:"continue", progress:72,c1:"#172554",c2:"#111827"},
   {title:"Neon Harbor", year:2025, desc:"A detective follows a trail of coded messages through a futuristic waterfront.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
   {title:"The Outpost", year:2025, desc:"A remote research team loses contact with the outside world after finding something buried beneath the ice.", category:"continue", progress:18,c1:"#334155",c2:"#0f172a"},
   {title:"After Dark", year:2026, desc:"Three friends discover that their town has a second life after midnight.", category:"continue", progress:88,c1:"#3f0b23",c2:"#111827"},
@@ -13,7 +13,7 @@ const catalog = [
   {title:"Wild Horizon", year:2026, desc:"A survival expedition becomes a fight against a storm no one predicted.", category:"continue", progress:23,c1:"#713f12",c2:"#1e293b"},
 
   {title:"Night Shift", year:2025, desc:"A hospital security guard realizes one patient has never appeared on any record.", category:"popular",c1:"#450a0a",c2:"#1f2937"},
-  {title:"Three Against Three", year:2026, desc:"A small mountain community faces strange events after an unexplained object lands nearby.", category:"popular",c1:"#3f6212",c2:"#172554"},
+  {title:"Three Against Three", year:2026, desc:"Its a Marty story, with some others as well.", category:"popular",c1:"#3f6212",c2:"#172554"},
   {title:"Paper Kingdom", year:2025, desc:"A brilliant strategist assembles an unlikely crew for an impossible heist.", category:"popular",c1:"#713f12",c2:"#292524"},
   {title:"Parallel", year:2026, desc:"A scientist discovers a doorway to a world where one decision changed everything.", category:"popular",c1:"#581c87",c2:"#172554"},
   {title:"Black Tide", year:2025, desc:"A salvage crew finds a signal beneath the ocean floor.", category:"popular",c1:"#082f49",c2:"#0f172a"},
