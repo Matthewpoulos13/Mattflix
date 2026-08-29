@@ -17,7 +17,7 @@ const catalog = [
   {title:"Paper Kingdom", year:2025, desc:"A brilliant strategist assembles an unlikely crew for an impossible heist.", category:"popular",c1:"#713f12",c2:"#292524"},
   {title:"The Company", year:2025, desc:"In the middle of nothing a company was created to save everyone.", category:"popular",c1:"#581c87",c2:"#172554"},
   {title:"Black Tide", year:2025, desc:"A salvage crew finds a signal beneath the ocean floor.", category:"popular",c1:"#082f49",c2:"#0f172a"},
-  {title:"The Avengers", year:2012, desc:"Earth's mightiest heros assemble to defeat the all powerfull Loki, of Asguard.", category:"popular",image:"the-avengers.png",c1:"#7f1d1d",c2:"#292524"},
+  {title:"The Avengers", year:2012, desc:"Earth's mightiest heros assemble to defeat the all powerfull Loki, of Asguard.", category:"popular",image:"the-avengers.png",rating:"PG-13",duration:"2h 26m",c1:"#7f1d1d",c2:"#292524"},
 
   {title:"The Stolen Card", year:2026, desc:"Three friends race to steal a card to copy it for their own good.", category:"new", c1:"#8d1019",c2:"#111827"},
   {title:"Static", year:2026, desc:"A radio host starts receiving broadcasts from tomorrow.", category:"new",c1:"#312e81",c2:"#111827"},
@@ -49,7 +49,7 @@ function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;","
 function findTitle(title){return catalog.find(x=>x.title===title)}
 function metaHtml(item){
   const duration = item.duration ? `<span>${escapeHtml(item.duration)}</span>` : `<span>2 Seasons</span>`;
-  return `<span class="match">98% Match</span><span>${item.year}</span><span>TV-14</span>${duration}<span>HD</span>`;
+  return `<span class="match">98% Match</span><span>${item.year}</span><span>${escapeHtml(item.rating || "TV-14")}</span>${duration}<span>HD</span>`;
 }
 
 function renderRows(){
