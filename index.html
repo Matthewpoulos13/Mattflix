@@ -126,5 +126,99 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(n && n.textContent) mattflixUpdateProgress(n.textContent.trim(),v);
  });
 });
+</script><script>
+
+/* Netflix-style persistent Continue Watching */
+const MATTFLIX_PROGRESS_KEY = "mattflix-video-progress-v2";
+
+function mattflixProgressStore(){
+  try { return JSON.parse(localStorage.getItem(MATTFLIX_PROGRESS_KEY) || "{}"); }
+  catch(e) { return {}; }
+}
+function mattflixSaveProgress(title, seconds, duration){
+  if(!title || !isFinite(seconds)) return;
+  const store = mattflixProgressStore();
+  store[title] = {
+    seconds: Math.max(0, seconds),
+    duration: isFinite(duration) && duration > 0 ? duration : (store[title]?.duration || 0),
+    updated: Date.now()
+  };
+  localStorage.setItem(MATTFLIX_PROGRESS_KEY, JSON.stringify(store));
+}
+function mattflixGetProgress(title){
+  return mattflixProgressStore()[title] || null;
+}
+function mattflixApplyProgress(title, video){
+  const saved = mattflixGetProgress(title);
+  if(!saved || !isFinite(saved.seconds) || saved.seconds <= 0) return;
+  const seek = () => {
+    if(isFinite(video.duration) && video.duration > 0){
+      const max = Math.max(0, video.duration - 1);
+      video.currentTime = Math.min(saved.seconds, max);
+      video.removeEventListener("loadedmetadata", seek);
+    }
+  };
+  if(isFinite(video.duration) && video.duration > 0) seek();
+  else video.addEventListener("loadedmetadata", seek);
+}
+function mattflixUpdateCardProgress(title, video){
+  if(!video || !isFinite(video.duration) || video.duration <= 0) return;
+  const pct = Math.max(0, Math.min(100, video.currentTime / video.duration * 100));
+  document.querySelectorAll(".card[data-title]").forEach(card=>{
+    if(card.dataset.title === title){
+      const bar = card.querySelector(".progress i");
+      if(bar) bar.style.width = pct + "%";
+    }
+  });
+}
+function mattflixBindVideoResume(video){
+  if(!video || video.dataset.mattflixBound === "1") return;
+  video.dataset.mattflixBound = "1";
+
+  video.addEventListener("loadedmetadata", ()=>{
+    const name = document.getElementById("playerName");
+    if(name && name.textContent.trim()) mattflixApplyProgress(name.textContent.trim(), video);
+  });
+
+  video.addEventListener("timeupdate", ()=>{
+    const name = document.getElementById("playerName");
+    const title = name && name.textContent.trim();
+    if(!title || !isFinite(video.currentTime)) return;
+    mattflixSaveProgress(title, video.currentTime, video.duration);
+    mattflixUpdateCardProgress(title, video);
+  });
+
+  video.addEventListener("pause", ()=>{
+    const name = document.getElementById("playerName");
+    const title = name && name.textContent.trim();
+    if(title) mattflixSaveProgress(title, video.currentTime, video.duration);
+  });
+
+  video.addEventListener("ended", ()=>{
+    const name = document.getElementById("playerName");
+    const title = name && name.textContent.trim();
+    if(title){
+      const store = mattflixProgressStore();
+      store[title] = {seconds: 0, duration: video.duration || 0, updated: Date.now()};
+      localStorage.setItem(MATTFLIX_PROGRESS_KEY, JSON.stringify(store));
+    }
+  });
+}
+function mattflixRenderSavedProgress(){
+  const store = mattflixProgressStore();
+  document.querySelectorAll(".card[data-title]").forEach(card=>{
+    const saved = store[card.dataset.title];
+    const bar = card.querySelector(".progress i");
+    if(bar && saved && saved.duration > 0){
+      bar.style.width = Math.max(0, Math.min(100, saved.seconds / saved.duration * 100)) + "%";
+    }
+  });
+}
+document.addEventListener("DOMContentLoaded", ()=>{
+  const video = document.getElementById("video");
+  if(video) mattflixBindVideoResume(video);
+  mattflixRenderSavedProgress();
+});
+
 </script></body>
 </html>
