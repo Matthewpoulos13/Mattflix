@@ -126,7 +126,7 @@ window.addEventListener("scroll",()=>$("#topbar").classList.toggle("scrolled",sc
 
 const heroSlides=[
   {title:"MATTHEW: THE MOVIE",desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.",year:2026,duration:"1h 37m",bg:["#8d1019","#111827"]},
-  {title:"THE FLAMES HIT",desc:"When the Flames start hitting they start winning.",year:2026,duration:"2h 17m",bg:["#b91c1c","#422006"]},
+  {title:"THE FLAMES HIT",desc:"When the Flames start hitting they start winning.",year:2026,duration:"2h 17m",image:"flames-hit.png",bg:["#b91c1c","#422006"]},
   {title:"THE SPY WHO LOOKED BACK",desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.",year:2026,duration:"2h 25m",image:SPY_IMAGE,bg:["#172554","#111827"]}
 ];
 let slide=0;
