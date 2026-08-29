@@ -3,10 +3,10 @@ const SPY_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABgAAAAQACAYAAAA
 const catalog = [
   {title:"Matthew: The Movie", year:2026, desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.", category:"continue", progress:34,c1:"#8d1019",c2:"#111827"},
   {title:"The Flames Hit", year:2026, desc:"When the Flames start hitting they start winning.", category:"continue", progress:61,c1:"#b91c1c",c2:"#422006"},
-  {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it's hidden in the past he thought he had escaped.", category:"continue", progress:47,image:SPY_IMAGE,c1:"#172554",c2:"#111827"},
+  {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.", category:"continue", progress:25,image:SPY_IMAGE,c1:"#172554",c2:"#111827"},
 
   {title:"The High Marker", year:2026, desc:"A exciting tale about Mark and his intersting marker.", category:"continue", progress:72,c1:"#172554",c2:"#111827"},
-  {title:"", year:2025, desc:"A detective follows a trail of coded messages through a futuristic waterfront.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
+  {title:"The Money Maker", year:2026, desc:"One guy makes his very own currency and is the greatest ever.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
   {title:"The Outpost", year:2025, desc:"A remote research team loses contact with the outside world after finding something buried beneath the ice.", category:"continue", progress:18,c1:"#334155",c2:"#0f172a"},
   {title:"After Dark", year:2026, desc:"Three friends discover that their town has a second life after midnight.", category:"continue", progress:88,c1:"#3f0b23",c2:"#111827"},
   {title:"Code Zero", year:2024, desc:"An ordinary programmer uncovers a security key that powerful people will do anything to recover.", category:"continue", progress:57,c1:"#064e3b",c2:"#172554"},
@@ -17,7 +17,7 @@ const catalog = [
   {title:"Paper Kingdom", year:2025, desc:"A brilliant strategist assembles an unlikely crew for an impossible heist.", category:"popular",c1:"#713f12",c2:"#292524"},
   {title:"The Company", year:2025, desc:"In the middle of nothing a company was created to save everyone.", category:"popular",c1:"#581c87",c2:"#172554"},
   {title:"Black Tide", year:2025, desc:"A salvage crew finds a signal beneath the ocean floor.", category:"popular",c1:"#082f49",c2:"#0f172a"},
-  {title:"The Gambit", year:2026, desc:"A young chess prodigy enters a tournament where every match hides a secret.", category:"popular",c1:"#7f1d1d",c2:"#292524"},
+  {title:"The Avengers", year:2012, desc:"Earth's mightiest heros assemble to defeat the all powerfull Loki, of Asguard.", category:"popular",c1:"#7f1d1d",c2:"#292524"},
 
   {title:"The Stolen Card", year:2026, desc:"Three friends race to steal a card to copy it for their own good.", category:"new", c1:"#8d1019",c2:"#111827"},
   {title:"Static", year:2026, desc:"A radio host starts receiving broadcasts from tomorrow.", category:"new",c1:"#312e81",c2:"#111827"},
@@ -122,7 +122,7 @@ window.addEventListener("scroll",()=>$("#topbar").classList.toggle("scrolled",sc
 const heroSlides=[
   {title:"MATTHEW: THE MOVIE",desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.",bg:["#8d1019","#111827"]},
   {title:"THE FLAMES HIT",desc:"When the Flames start hitting they start winning.",bg:["#b91c1c","#422006"]},
-  {title:"THE SPY WHO LOOKED BACK",desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it's hidden in the past he thought he had escaped.",image:SPY_IMAGE,bg:["#172554","#111827"]}
+  {title:"THE SPY WHO LOOKED BACK",desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.",image:SPY_IMAGE,bg:["#172554","#111827"]}
 ];
 let slide=0;
 function showSlide(i){
