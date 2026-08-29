@@ -1,9 +1,9 @@
 const SPY_IMAGE = "spy-who-looked-back.png";
 
 const catalog = [
-  {title:"Matthew: The Movie", year:2026, desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.", category:"continue", progress:34,c1:"#8d1019",c2:"#111827"},
-  {title:"The Flames Hit", year:2026, desc:"When the Flames start hitting they start winning.", category:"continue", progress:61,c1:"#b91c1c",c2:"#422006"},
-  {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.", category:"continue", progress:25,image:SPY_IMAGE,duration:"2hr",c1:"#172554",c2:"#111827"},
+  {title:"Matthew: The Movie", year:2026, desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.", category:"continue", progress:34,duration:"1h 37m",c1:"#8d1019",c2:"#111827"},
+  {title:"The Flames Hit", year:2026, desc:"When the Flames start hitting they start winning.", category:"continue", progress:61,duration:"2h 17m",c1:"#b91c1c",c2:"#422006"},
+  {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.", category:"continue", progress:25,image:SPY_IMAGE,duration:"2h 25m",c1:"#172554",c2:"#111827"},
 
   {title:"The High Marker", year:2026, desc:"A exciting tale about Mark and his intersting marker.", category:"continue", progress:72,c1:"#172554",c2:"#111827"},
   {title:"The Money Maker", year:2026, desc:"One guy makes his very own currency and is the greatest ever.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
@@ -125,9 +125,9 @@ $("#profileBtn").onclick=()=>toast("Profile: Matthew");
 window.addEventListener("scroll",()=>$("#topbar").classList.toggle("scrolled",scrollY>20));
 
 const heroSlides=[
-  {title:"MATTHEW: THE MOVIE",desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.",year:2026,bg:["#8d1019","#111827"]},
-  {title:"THE FLAMES HIT",desc:"When the Flames start hitting they start winning.",year:2026,bg:["#b91c1c","#422006"]},
-  {title:"THE SPY WHO LOOKED BACK",desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.",year:2026,duration:"2hr",image:SPY_IMAGE,bg:["#172554","#111827"]}
+  {title:"MATTHEW: THE MOVIE",desc:"Matthew's story takes center stage in this Mattflix original — a big-screen adventure filled with surprises, unforgettable moments, and one very determined hero.",year:2026,duration:"1h 37m",bg:["#8d1019","#111827"]},
+  {title:"THE FLAMES HIT",desc:"When the Flames start hitting they start winning.",year:2026,duration:"2h 17m",bg:["#b91c1c","#422006"]},
+  {title:"THE SPY WHO LOOKED BACK",desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.",year:2026,duration:"2h 25m",image:SPY_IMAGE,bg:["#172554","#111827"]}
 ];
 let slide=0;
 function showSlide(i){
