@@ -32,19 +32,6 @@ const sampleVideo = "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4
 const $ = s => document.querySelector(s);
 const allRows = {continue:"#continueRow", popular:"#popularRow", new:"#newRow"};
 
-function card(item){
-  const artStyle = item.image ? "" : `--c1:${item.c1};--c2:${item.c2};`;
-  const poster = item.image ? `<img class="card-poster" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)} poster">` : "";
-  return `<article class="card" data-title="${escapeHtml(item.title)}" style="${artStyle}">
-    <div class="card-art" style="${artStyle}">${poster}<span class="badge">M</span><span class="card-title">${escapeHtml(item.title)}</span></div>
-    ${item.progress ? `<div class="progress"><i style="width:${item.progress}%"></i></div>` : ""}
-    <div class="card-actions">
-      <button class="mini-btn play-mini" title="Play">▶</button>
-      <button class="mini-btn info-mini" title="Info">i</button>
-      <button class="mini-btn list-mini" title="My List">＋</button>
-    </div>
-  </article>`;
-}
 function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function findTitle(title){return catalog.find(x=>x.title===title)}
 function metaHtml(item){
@@ -52,12 +39,6 @@ function metaHtml(item){
   return `<span class="match">98% Match</span><span>${item.year}</span><span>${escapeHtml(item.rating || "TV-14")}</span>${duration}<span>HD</span>`;
 }
 
-function renderRows(){
-  Object.entries(allRows).forEach(([category,selector])=>{
-    $(selector).innerHTML = catalog.filter(x=>x.category===category).map(card).join("");
-  });
-  renderMyList();
-}
 function getList(){try{return JSON.parse(localStorage.getItem("mattflix-list")||"[]")}catch{return[]}}
 function setList(list){localStorage.setItem("mattflix-list",JSON.stringify(list))}
 function renderMyList(){
@@ -86,14 +67,6 @@ function toggleList(title){
   else{list.push(title);toast("Added to My List")}
   setList(list);renderMyList();
   const btn=$("#modalList"); if(btn&&$("#modalTitle").textContent===title)btn.textContent=list.includes(title)?"✓ In My List":"＋ My List";
-}
-function play(title){
-  const _mfVideo=document.getElementById("video"); if(_mfVideo) mattflixBindVideoResume(_mfVideo);
-  const x=findTitle(title); if(!x)return;
-  $("#playerTitle").textContent=x.title;
-  $("#video").src = x.title === "The Spy Who Looked Back" ? "the-spy-who-looked-back.mp4" : sampleVideo;
-  $("#player").classList.add("open");
-  $("#video").play().catch(()=>{});
 }
 function closePlayer(){$("#video").pause();$("#video").removeAttribute("src");$("#video").load();$("#player").classList.remove("open")}
 
@@ -141,121 +114,137 @@ function showSlide(i){
   [...$("#heroDots").children].forEach((d,n)=>d.classList.toggle("active",n===i));
 }
 heroSlides.forEach((_,i)=>{const d=document.createElement("span");d.className="dot";d.onclick=()=>showSlide(i);$("#heroDots").appendChild(d)});
-showSlide(0);renderRows();
+showSlide(0);
 setInterval(()=>showSlide((slide+1)%heroSlides.length),8000);
 
 
-/* Mattflix live Continue Watching progress */
-function mattflixUpdateProgress(title, video){
-  if(!video || !isFinite(video.duration) || video.duration <= 0) return;
-  const item = (typeof find === "function" ? find(title) : (typeof getItem === "function" ? getItem(title) : null));
-  if(item) item.progress = Math.max(0, Math.min(100, video.currentTime / video.duration * 100));
-  document.querySelectorAll('.card[data-title]').forEach(card=>{
-    if(card.dataset.title === title){
-      const bar=card.querySelector('.progress i');
-      if(bar) bar.style.width=(item ? item.progress : (video.currentTime/video.duration*100))+'%';
-    }
-  });
-}
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  const v=document.getElementById('video');
-  if(!v) return;
-  v.addEventListener('timeupdate', ()=>{
-    const n=document.getElementById('playerName');
-    if(n && n.textContent) mattflixUpdateProgress(n.textContent.trim(),v);
-  });
-});
-
-
-/* Netflix-style persistent Continue Watching */
-const MATTFLIX_PROGRESS_KEY = "mattflix-video-progress-v2";
+/* Netflix-style persistent Continue Watching + resume */
+const MATTFLIX_PROGRESS_KEY = "mattflix-video-progress-v3";
+const COMPLETION_THRESHOLD = 0.985;
 
 function mattflixProgressStore(){
   try { return JSON.parse(localStorage.getItem(MATTFLIX_PROGRESS_KEY) || "{}"); }
   catch(e) { return {}; }
 }
-function mattflixSaveProgress(title, seconds, duration){
-  if(!title || !isFinite(seconds)) return;
-  const store = mattflixProgressStore();
-  store[title] = {
-    seconds: Math.max(0, seconds),
-    duration: isFinite(duration) && duration > 0 ? duration : (store[title]?.duration || 0),
-    updated: Date.now()
-  };
-  localStorage.setItem(MATTFLIX_PROGRESS_KEY, JSON.stringify(store));
+function mattflixWriteStore(store){ localStorage.setItem(MATTFLIX_PROGRESS_KEY, JSON.stringify(store)); }
+function mattflixGetProgress(title){ return mattflixProgressStore()[title] || null; }
+function mattflixIsInProgress(title){
+  const p=mattflixGetProgress(title);
+  return !!(p && p.completed !== true && p.seconds > 0 && p.duration > 0 && p.percent > 0 && p.percent < 98.5);
 }
-function mattflixGetProgress(title){
-  return mattflixProgressStore()[title] || null;
+function mattflixSaveProgress(title, seconds, duration){
+  if(!title || !isFinite(seconds) || !isFinite(duration) || duration <= 0) return;
+  const pct=Math.max(0, Math.min(100, seconds/duration*100));
+  const store=mattflixProgressStore();
+  if(pct >= COMPLETION_THRESHOLD*100){
+    store[title]={seconds:duration,duration,percent:100,completed:true,updated:Date.now()};
+  } else if(seconds > 0.25){
+    store[title]={seconds:Math.min(seconds,duration),duration,percent:pct,completed:false,updated:Date.now()};
+  }
+  mattflixWriteStore(store);
+  renderRows();
+}
+function mattflixMarkCompleted(title, video){
+  if(!title) return;
+  const store=mattflixProgressStore();
+  store[title]={seconds:video && isFinite(video.duration)?video.duration:0,duration:video && isFinite(video.duration)?video.duration:(store[title]?.duration||0),percent:100,completed:true,updated:Date.now()};
+  mattflixWriteStore(store);
+  renderRows();
 }
 function mattflixApplyProgress(title, video){
-  const saved = mattflixGetProgress(title);
-  if(!saved || !isFinite(saved.seconds) || saved.seconds <= 0) return;
-  const seek = () => {
-    if(isFinite(video.duration) && video.duration > 0){
-      const max = Math.max(0, video.duration - 1);
-      video.currentTime = Math.min(saved.seconds, max);
-      video.removeEventListener("loadedmetadata", seek);
+  const saved=mattflixGetProgress(title);
+  if(!saved || saved.completed || !isFinite(saved.seconds) || saved.seconds <= 0) return;
+  const seek=()=>{
+    if(isFinite(video.duration) && video.duration>0){
+      video.currentTime=Math.min(saved.seconds, Math.max(0,video.duration-0.5));
+      video.removeEventListener("loadedmetadata",seek);
     }
   };
-  if(isFinite(video.duration) && video.duration > 0) seek();
-  else video.addEventListener("loadedmetadata", seek);
-}
-function mattflixUpdateCardProgress(title, video){
-  if(!video || !isFinite(video.duration) || video.duration <= 0) return;
-  const pct = Math.max(0, Math.min(100, video.currentTime / video.duration * 100));
-  document.querySelectorAll(".card[data-title]").forEach(card=>{
-    if(card.dataset.title === title){
-      const bar = card.querySelector(".progress i");
-      if(bar) bar.style.width = pct + "%";
-    }
-  });
-}
-function mattflixBindVideoResume(video){
-  if(!video || video.dataset.mattflixBound === "1") return;
-  video.dataset.mattflixBound = "1";
-
-  video.addEventListener("loadedmetadata", ()=>{
-    const name = document.getElementById("playerTitle");
-    if(name && name.textContent.trim()) mattflixApplyProgress(name.textContent.trim(), video);
-  });
-
-  video.addEventListener("timeupdate", ()=>{
-    const name = document.getElementById("playerTitle");
-    const title = name && name.textContent.trim();
-    if(!title || !isFinite(video.currentTime)) return;
-    mattflixSaveProgress(title, video.currentTime, video.duration);
-    mattflixUpdateCardProgress(title, video);
-  });
-
-  video.addEventListener("pause", ()=>{
-    const name = document.getElementById("playerTitle");
-    const title = name && name.textContent.trim();
-    if(title) mattflixSaveProgress(title, video.currentTime, video.duration);
-  });
-
-  video.addEventListener("ended", ()=>{
-    const name = document.getElementById("playerTitle");
-    const title = name && name.textContent.trim();
-    if(title){
-      const store = mattflixProgressStore();
-      store[title] = {seconds: 0, duration: video.duration || 0, updated: Date.now()};
-      localStorage.setItem(MATTFLIX_PROGRESS_KEY, JSON.stringify(store));
-    }
-  });
+  if(isFinite(video.duration) && video.duration>0) seek(); else video.addEventListener("loadedmetadata",seek);
 }
 function mattflixRenderSavedProgress(){
-  const store = mattflixProgressStore();
+  const store=mattflixProgressStore();
   document.querySelectorAll(".card[data-title]").forEach(card=>{
-    const saved = store[card.dataset.title];
-    const bar = card.querySelector(".progress i");
-    if(bar && saved && saved.duration > 0){
-      bar.style.width = Math.max(0, Math.min(100, saved.seconds / saved.duration * 100)) + "%";
-    }
+    const p=store[card.dataset.title], bar=card.querySelector(".progress i");
+    if(!bar) return;
+    if(p && !p.completed && p.duration>0) bar.style.width=Math.max(0,Math.min(100,p.seconds/p.duration*100))+"%";
+    else bar.style.width="0%";
   });
 }
-document.addEventListener("DOMContentLoaded", ()=>{
-  const video = document.getElementById("video");
-  if(video) mattflixBindVideoResume(video);
+function renderRows(){
+  const saved=Object.entries(mattflixProgressStore())
+    .filter(([title,p])=>p && !p.completed && p.seconds>0 && p.duration>0 && p.percent<98.5)
+    .sort((a,b)=>(b[1].updated||0)-(a[1].updated||0))
+    .map(([title])=>findTitle(title)).filter(Boolean);
+  $("#continueRow").innerHTML=saved.map(card).join("");
+  Object.entries(allRows).filter(([category])=>category!=="continue").forEach(([category,selector])=>{
+    $(selector).innerHTML=catalog.filter(x=>x.category===category).map(card).join("");
+  });
+  renderMyList();
   mattflixRenderSavedProgress();
-});
+  const empty=$("#continueRow").parentElement.querySelector(".see-all");
+  $("#continueRow").parentElement.style.display=saved.length?"":"none";
+}
+
+function card(item){
+  const artStyle=item.image?"":`--c1:${item.c1};--c2:${item.c2};`;
+  const poster=item.image?`<img class="card-poster" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)} poster">`:"";
+  const p=mattflixGetProgress(item.title);
+  const progress=p && !p.completed && p.duration>0 ? Math.max(0,Math.min(100,p.seconds/p.duration*100)) : 0;
+  return `<article class="card" data-title="${escapeHtml(item.title)}" style="${artStyle}">
+    <div class="card-art" style="${artStyle}">${poster}<span class="badge">M</span><span class="card-title">${escapeHtml(item.title)}</span></div>
+    ${progress>0?`<div class="progress"><i style="width:${progress}%"></i></div>`:""}
+    <div class="card-actions"><button class="mini-btn play-mini" title="Play">▶</button><button class="mini-btn info-mini" title="Info">i</button><button class="mini-btn list-mini" title="My List">＋</button></div>
+  </article>`;
+}
+
+function play(title){
+  const x=findTitle(title); if(!x)return;
+  const video=$("#video");
+  mattflixBindVideoResume(video);
+  $("#playerTitle").textContent=x.title;
+  video.src=x.title==="The Spy Who Looked Back"?"the-spy-who-looked-back.mp4":sampleVideo;
+  video.load();
+  $("#player").classList.add("open");
+  video.play().catch(()=>{});
+}
+function closePlayer(){
+  const video=$("#video"), title=$("#playerTitle").textContent.trim();
+  if(title && isFinite(video.currentTime) && isFinite(video.duration) && video.duration>0 && !video.ended) mattflixSaveProgress(title,video.currentTime,video.duration);
+  video.pause(); video.removeAttribute("src"); video.load(); $("#player").classList.remove("open");
+}
+
+function mattflixBindVideoResume(video){
+  if(!video || video.dataset.mattflixBound==="1") return;
+  video.dataset.mattflixBound="1";
+  video.addEventListener("loadedmetadata",()=>{
+    const title=$("#playerTitle").textContent.trim();
+    if(title) mattflixApplyProgress(title,video);
+  });
+  video.addEventListener("timeupdate",()=>{
+    const title=$("#playerTitle").textContent.trim();
+    if(title && isFinite(video.currentTime) && isFinite(video.duration) && video.duration>0){
+      mattflixSaveProgress(title,video.currentTime,video.duration);
+    }
+  });
+  video.addEventListener("pause",()=>{
+    const title=$("#playerTitle").textContent.trim();
+    if(title && !video.ended && isFinite(video.currentTime) && isFinite(video.duration) && video.duration>0) mattflixSaveProgress(title,video.currentTime,video.duration);
+  });
+  video.addEventListener("ended",()=>{
+    const title=$("#playerTitle").textContent.trim();
+    if(title) mattflixMarkCompleted(title,video);
+  });
+}
+
+// Replace the original static row renderer with the saved-progress renderer.
+function renderMyList(){
+  const list=getList();
+  $("#myListRow").innerHTML=list.map(t=>{const x=findTitle(t);return x?card(x):""}).join("");
+  $("#emptyList").style.display=list.length?"none":"block";
+}
+
+// Initial rendering and video binding.
+renderRows();
+mattflixBindVideoResume($("#video"));
