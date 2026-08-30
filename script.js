@@ -23,7 +23,7 @@ const catalog = [
   {title:"Static", year:2026, desc:"A radio host starts receiving broadcasts from tomorrow.", category:"new",c1:"#312e81",c2:"#111827"},
   {title:"Red Planet", year:2026, desc:"The first crewed mission to Mars loses communication just hours before landing.", category:"new",c1:"#9a3412",c2:"#1c1917"},
   {title:"Echo House", year:2026, desc:"A family moves into a house where every room remembers a different past.", category:"new",c1:"#334155",c2:"#3f0b23"},
-  {title:"Velocity", year:2026, desc:"A street racer discovers a prototype vehicle capable of impossible speeds.", category:"new",c1:"#1d4ed8",c2:"#111827"},
+  {title:"Velocity", year:2026, desc:"A street racer discovers a prototype vehicle capable of impossible speeds.", category:"new",image:"velocity.png",duration:"2h 32m",c1:"#1d4ed8",c2:"#111827"},
   {title:"Wildfire", year:2026, desc:"A wildfire traps a rescue team between a canyon and a rapidly changing wind.", category:"new",c1:"#b91c1c",c2:"#422006"},
   {title:"Orbit", year:2026, desc:"Astronauts aboard a damaged station have one window to repair the system and return home.", category:"new",c1:"#0c4a6e",c2:"#1e1b4b"}
 ];
