@@ -30,7 +30,7 @@ const catalog = [
 
 const sampleVideo = "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4";
 const $ = s => document.querySelector(s);
-const allRows = {continue:"#continueRow", popular:"#popularRow", new:"#newRow"};
+const allRows = {outNow:"#outNowRow", popular:"#popularRow", new:"#newRow"};
 
 function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function findTitle(title){return catalog.find(x=>x.title===title)}
@@ -178,7 +178,10 @@ function renderRows(){
     .sort((a,b)=>(b[1].updated||0)-(a[1].updated||0))
     .map(([title])=>findTitle(title)).filter(Boolean);
   $("#continueRow").innerHTML=saved.map(card).join("");
-  Object.entries(allRows).filter(([category])=>category!=="continue").forEach(([category,selector])=>{
+  // "Out Now" contains the titles that are designated as the catalog's
+  // continue category. Actual Continue Watching is driven only by saved playback.
+  $("#outNowRow").innerHTML=catalog.filter(x=>x.category==="continue").map(card).join("");
+  Object.entries(allRows).filter(([category])=>category!=="outNow").forEach(([category,selector])=>{
     $(selector).innerHTML=catalog.filter(x=>x.category===category).map(card).join("");
   });
   renderMyList();
