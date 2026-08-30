@@ -28,7 +28,7 @@ const catalog = [
   {title:"Orbit", year:2026, desc:"Astronauts aboard a damaged station have one window to repair the system and return home.", category:"new",c1:"#0c4a6e",c2:"#1e1b4b"}
 ];
 
-const sampleVideo = "https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4";
+const sampleVideo = "sample.mp4";
 const $ = s => document.querySelector(s);
 const allRows = {outNow:"#outNowRow", popular:"#popularRow", new:"#newRow"};
 
