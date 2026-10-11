@@ -6,7 +6,7 @@ const catalog = [
   {title:"The Spy Who Looked Back", year:2026, desc:"A spy on the run discovers that the biggest threat isn't ahead of him — it is him.", category:"continue", progress:25,image:SPY_IMAGE,duration:"2h 25m",c1:"#172554",c2:"#111827"},
 
   {title:"The High Marker", year:2026, desc:"A exciting tale about Mark and his intersting marker.", category:"continue", progress:72,c1:"#172554",c2:"#111827"},
-  {title:"Tripple A", year:2026, desc:"Six people come together to put an end to a common enemy.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
+  {title:"Triple A", year:2026, desc:"Six people come together to put an end to a common enemy.", category:"continue", progress:41,c1:"#164e63",c2:"#312e81"},
   {title:"The Outpost", year:2025, desc:"A remote research team loses contact with the outside world after finding something buried beneath the ice.", category:"continue", progress:18,c1:"#334155",c2:"#0f172a"},
   {title:"After Dark", year:2026, desc:"Three friends discover that their town has a second life after midnight.", category:"continue", progress:88,c1:"#3f0b23",c2:"#111827"},
   {title:"Code Zero", year:2024, desc:"An ordinary programmer uncovers a security key that powerful people will do anything to recover.", category:"continue", progress:57,c1:"#064e3b",c2:"#172554"},
