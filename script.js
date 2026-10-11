@@ -213,15 +213,7 @@ function play(title){
   $("#player").classList.add("open");
   video.play().catch(()=>{});
 
-  function play(title){
-  const x=findTitle(title); if(!x)return;
-  const video=$("#video");
-  mattflixBindVideoResume(video);
-  $("#playerTitle").textContent=x.title;
-  video.src=x.title==="Triple A"?"TRIPLE-A.mp4":sampleVideo;
-  video.load();
-  $("#player").classList.add("open");
-  video.play().catch(()=>{});
+  
 }
 function closePlayer(){
   const video=$("#video"), title=$("#playerTitle").textContent.trim();
