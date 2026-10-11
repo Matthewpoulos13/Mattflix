@@ -36,14 +36,12 @@ function escapeHtml(s){
 }
 
 function findTitle(title){
-  return catalog.find(x=>x.title===title);
+  return catalog.find(x=>x.title.toLowerCase()===title.trim().toLowerCase());
 }
 
 function metaHtml(item){
-  const duration = item.duration
-    ? `<span>${escapeHtml(item.duration)}</span>`
-    : `<span>2 Seasons</span>`;
-  return `<span class="match">98% Match</span><span>${item.year}</span><span>${escapeHtml(item.rating || "TV-14")}</span>${duration}<span>HD</span>`;
+  const duration=item.duration?`<span>${escapeHtml(item.duration)}</span>`:`<span>2 Seasons</span>`;
+  return `<span class="match">98% Match</span><span>${item.year}</span><span>${escapeHtml(item.rating||"TV-14")}</span>${duration}<span>HD</span>`;
 }
 
 function getList(){
@@ -79,8 +77,8 @@ function openInfo(title){
   $("#modalDescription").textContent=x.desc;
   $("#modalMeta").innerHTML=metaHtml(x);
   $("#modalArt").style.background=x.image
-    ? `url("${x.image}") center/cover no-repeat`
-    : `radial-gradient(circle at 75% 30%,${x.c1},${x.c2} 62%,#080808)`;
+    ?`url("${x.image}") center/cover no-repeat`
+    :`radial-gradient(circle at 75% 30%,${x.c1},${x.c2} 62%,#080808)`;
 
   $("#modalPlay").onclick=()=>{
     closeInfo();
@@ -136,14 +134,18 @@ document.addEventListener("click",e=>{
 
   if(cardEl){
     const title=cardEl.dataset.title;
+
     if(e.target.closest(".play-mini"))play(title);
     else if(e.target.closest(".info-mini"))openInfo(title);
     else if(e.target.closest(".list-mini"))toggleList(title);
     else openInfo(title);
   }
 
-  if(e.target.matches("[data-play]"))play(e.target.dataset.play);
-  if(e.target.matches("[data-info]"))openInfo(e.target.dataset.info);
+  const playButton=e.target.closest("[data-play]");
+  if(playButton)play(playButton.dataset.play);
+
+  const infoButton=e.target.closest("[data-info]");
+  if(infoButton)openInfo(infoButton.dataset.info);
 });
 
 $("#closeModal").onclick=closeInfo;
@@ -167,6 +169,7 @@ $("#searchOverlay").addEventListener("click",e=>{
 
 $("#searchInput").addEventListener("input",e=>{
   const q=e.target.value.toLowerCase().trim();
+
   const results=q
     ?catalog.filter(x=>x.title.toLowerCase().includes(q)||x.desc.toLowerCase().includes(q))
     :catalog.slice(0,6);
@@ -210,12 +213,13 @@ function showSlide(i){
   $("#heroTitle").textContent=s.title;
   $("#heroDescription").textContent=s.desc;
   $("#heroMeta").innerHTML=metaHtml({year:s.year||2026,duration:s.duration});
+
   $(".hero-buttons .play-btn").dataset.play=s.title;
   $(".hero-buttons .info-btn").dataset.info=s.title;
 
   $("#hero").style.background=s.image
-    ? `linear-gradient(90deg,#080808 0%,rgba(8,8,8,.84) 30%,rgba(8,8,8,.16) 68%,#080808 100%),linear-gradient(0deg,#080808 0%,transparent 38%),url("${s.image}") center/cover no-repeat`
-    : `radial-gradient(circle at 72% 38%,${s.bg[0]} 0,#2c0a0d 23%,${s.bg[1]} 48%,#080808 75%)`;
+    ?`linear-gradient(90deg,#080808 0%,rgba(8,8,8,.84) 30%,rgba(8,8,8,.16) 68%,#080808 100%),linear-gradient(0deg,#080808 0%,transparent 38%),url("${s.image}") center/cover no-repeat`
+    :`radial-gradient(circle at 72% 38%,${s.bg[0]} 0,#2c0a0d 23%,${s.bg[1]} 48%,#080808 75%)`;
 
   [...$("#heroDots").children].forEach((d,n)=>d.classList.toggle("active",n===i));
 }
@@ -230,13 +234,13 @@ heroSlides.forEach((_,i)=>{
 showSlide(0);
 setInterval(()=>showSlide((slide+1)%heroSlides.length),8000);
 
-/* Persistent Continue Watching + resume playback */
+/* Playback progress and resume */
 const MATTFLIX_PROGRESS_KEY="mattflix-video-progress-v3";
 const COMPLETION_THRESHOLD=0.985;
 
 function mattflixProgressStore(){
   try{return JSON.parse(localStorage.getItem(MATTFLIX_PROGRESS_KEY)||"{}");}
-  catch(e){return {};}
+  catch{return {};}
 }
 
 function mattflixWriteStore(store){
@@ -249,7 +253,7 @@ function mattflixGetProgress(title){
 
 function mattflixIsInProgress(title){
   const p=mattflixGetProgress(title);
-  return !!(p&&p.completed!==true&&p.seconds>0&&p.duration>0&&p.percent>0&&p.percent<98.5);
+  return !!(p&&!p.completed&&p.seconds>0&&p.duration>0&&p.percent>0&&p.percent<98.5);
 }
 
 function mattflixSaveProgress(title,seconds,duration){
@@ -259,9 +263,7 @@ function mattflixSaveProgress(title,seconds,duration){
   const store=mattflixProgressStore();
 
   if(pct>=COMPLETION_THRESHOLD*100){
-    store[title]={
-      seconds:duration,duration,percent:100,completed:true,updated:Date.now()
-    };
+    store[title]={seconds:duration,duration,percent:100,completed:true,updated:Date.now()};
   }else if(seconds>0.25){
     store[title]={
       seconds:Math.min(seconds,duration),
@@ -280,6 +282,7 @@ function mattflixMarkCompleted(title,video){
   if(!title)return;
 
   const store=mattflixProgressStore();
+
   store[title]={
     seconds:video&&isFinite(video.duration)?video.duration:0,
     duration:video&&isFinite(video.duration)?video.duration:(store[title]?.duration||0),
@@ -344,12 +347,12 @@ function renderRows(){
   renderMyList();
   mattflixRenderSavedProgress();
 
-  const empty=$("#continueRow").parentElement.querySelector(".see-all");
   $("#continueRow").parentElement.style.display=saved.length?"":"none";
 }
 
 function card(item){
   const artStyle=item.image?"":`--c1:${item.c1};--c2:${item.c2};`;
+
   const poster=item.image
     ?`<img class="card-poster" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)} poster">`
     :"";
@@ -374,27 +377,39 @@ function card(item){
   </article>`;
 }
 
+/* Movie playback */
 function play(title){
   const x=findTitle(title);
-  if(!x)return;
+
+  if(!x){
+    console.error("Movie not found:",title);
+    return;
+  }
 
   const video=$("#video");
   mattflixBindVideoResume(video);
   $("#playerTitle").textContent=x.title;
 
-  // Each movie uses its own MP4 where specified.
-  // All other sample movies continue to use sample.mp4.
   if(x.title==="The Spy Who Looked Back"){
-    video.src="the-spy-who-looked-back.mp4";
+    video.src="./the-spy-who-looked-back.mp4";
   }else if(x.title==="Triple A"){
-    video.src="TRIPLE-A.mp4";
+    video.src="./TRIPLE-A.mp4";
   }else{
-    video.src=sampleVideo;
+    video.src="sample.mp4";
   }
+
+  video.onerror=()=>{
+    console.error("Could not load video:",video.currentSrc);
+    toast("Video not found. Check the MP4 filename and location.");
+  };
 
   video.load();
   $("#player").classList.add("open");
-  video.play().catch(()=>{});
+
+  video.play().catch(error=>{
+    console.error("Video playback failed:",error);
+    toast("Couldn't play video. Check the MP4 file.");
+  });
 }
 
 function mattflixBindVideoResume(video){
@@ -429,7 +444,7 @@ function mattflixBindVideoResume(video){
   });
 }
 
-// Initial rendering and video binding.
+/* Initial rendering */
 renderRows();
 mattflixBindVideoResume($("#video"));
 
