@@ -218,7 +218,7 @@ function play(title){
   const video=$("#video");
   mattflixBindVideoResume(video);
   $("#playerTitle").textContent=x.title;
-  video.src=x.title==="Triple A"?"TRIPPLE A TRAILER.mp4":sampleVideo;
+  video.src=x.title==="Triple A"?"TRIPLE-A.mp4":sampleVideo;
   video.load();
   $("#player").classList.add("open");
   video.play().catch(()=>{});
