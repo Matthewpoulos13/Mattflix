@@ -210,7 +210,14 @@ function play(title){
   const video=$("#video");
   mattflixBindVideoResume(video);
   $("#playerTitle").textContent=x.title;
-  video.src=x.title==="The Spy Who Looked Back"?"the-spy-who-looked-back.mp4":sampleVideo;
+  // Use each movie's own MP4 file; filenames are case-sensitive on hosting services.
+  if (x.title === "The Spy Who Looked Back") {
+    video.src = "the-spy-who-looked-back.mp4";
+  } else if (x.title === "Triple A") {
+    video.src = "TRIPLE-A.mp4";
+  } else {
+    video.src = sampleVideo;
+  }
   video.load();
   $("#player").classList.add("open");
   video.play().catch(()=>{});
